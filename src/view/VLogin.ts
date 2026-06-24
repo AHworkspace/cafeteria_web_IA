@@ -57,7 +57,7 @@ export class VLogin {
 
   mostrarLogin(): void {
     this.titulo.textContent = 'Ingresar al sistema';
-    this.subtitulo.textContent = 'Usa tu cuenta de administrador, vendedor o cliente.';
+    this.subtitulo.textContent = 'Acceso rapido para la revision del sistema.';
     this.nombreField.hidden = true;
     this.btnLogin.hidden = false;
     this.btnRegistro.hidden = true;
@@ -65,6 +65,8 @@ export class VLogin {
     this.btnMostrarLogin.hidden = true;
     this.mensajeSalida.hidden = true;
     this.inputNombre.value = '';
+    this.inputCorreo.value = 'admin@cafeteria.com';
+    this.inputPassword.value = 'admin123';
   }
 
   mostrarRegistro(): void {
@@ -83,7 +85,7 @@ export class VLogin {
       <div class="panel-header">
         <div>
           <h2 id="authTitulo">Ingresar al sistema</h2>
-          <p id="authSubtitulo">Usa tu cuenta de administrador, vendedor o cliente.</p>
+          <p id="authSubtitulo">Acceso rapido para la revision del sistema.</p>
         </div>
       </div>
       <div id="authMensaje" hidden></div>
@@ -94,11 +96,11 @@ export class VLogin {
         </label>
         <label class="field">
           <span>Correo</span>
-          <input type="text" id="authCorreo" placeholder="correo@cafeteria.com">
+          <input type="text" id="authCorreo" value="admin@cafeteria.com">
         </label>
         <label class="field">
           <span>Contrasena</span>
-          <input type="password" id="authPassword" placeholder="Minimo 4 caracteres">
+          <input type="password" id="authPassword" value="admin123">
         </label>
         <div class="auth-actions">
           <button class="button" id="authLogin" type="submit">Entrar</button>
@@ -108,7 +110,7 @@ export class VLogin {
         </div>
       </form>
       <div class="empty-box auth-help">
-        Usuarios iniciales: admin@cafeteria.com / admin123, vendedor@cafeteria.com / vendedor123.
+        Acceso administrador: admin@cafeteria.com / admin123.
       </div>
     `;
   }
