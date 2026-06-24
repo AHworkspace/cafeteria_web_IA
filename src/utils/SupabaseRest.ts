@@ -27,14 +27,14 @@ export class SupabaseRest {
         const filasServidor = await this.listar(tabla);
         const filasLocales = this.leerLocal(tabla);
 
-        if (filasServidor.length > 0) {
-          localStorage.setItem(tabla, JSON.stringify(filasServidor));
-          return;
-        }
-
         if (filasLocales.length > 0) {
           await Promise.all(filasLocales.map((fila) => this.guardar(tabla, fila)));
         }
+
+        const filasActualizadas = filasLocales.length > 0
+          ? await this.listar(tabla)
+          : filasServidor;
+        localStorage.setItem(tabla, JSON.stringify(this.combinarPorId(filasLocales, filasActualizadas)));
       } catch (error) {
         console.warn(`No se pudo sincronizar la tabla ${tabla}.`, error);
       }
@@ -100,5 +100,24 @@ export class SupabaseRest {
     } catch {
       return [];
     }
+  }
+
+  private static combinarPorId(
+    locales: Record<string, unknown>[],
+    servidor: Record<string, unknown>[],
+  ): Record<string, unknown>[] {
+    const registros = new Map<number, Record<string, unknown>>();
+
+    servidor.forEach((fila) => {
+      const id = Number(fila.id ?? 0);
+      if (id > 0) registros.set(id, fila);
+    });
+
+    locales.forEach((fila) => {
+      const id = Number(fila.id ?? 0);
+      if (id > 0 && !registros.has(id)) registros.set(id, fila);
+    });
+
+    return [...registros.values()].sort((a, b) => Number(b.id ?? 0) - Number(a.id ?? 0));
   }
 }
