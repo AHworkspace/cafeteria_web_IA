@@ -8,6 +8,7 @@ import { CProducto } from './Controllers/CProducto';
 import { CReporte } from './Controllers/CReporte';
 import { CUsuario } from './Controllers/CUsuario';
 import { CEntrenamientoIA } from './Controllers/CEntrenamientoIA';
+import { SupabaseRest } from './utils/SupabaseRest';
 
 const app = document.querySelector<HTMLElement>('#app');
 const navChat = document.querySelector<HTMLButtonElement>('#navChat');
@@ -32,6 +33,9 @@ const btnUsuarios = navUsuarios;
 const btnEntrenamiento = navEntrenamiento;
 const btnReportes = navReportes;
 const btnCerrarSesion = navCerrarSesion;
+
+await SupabaseRest.sincronizarDesdeServidor();
+
 const authController = new CAuth((usuario) => iniciarAplicacion(usuario));
 let sesionActual: Usuario | null = authController.obtenerSesion();
 

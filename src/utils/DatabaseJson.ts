@@ -1,3 +1,5 @@
+import { SupabaseRest } from './SupabaseRest';
+
 export class DatabaseJson<T extends Record<string, unknown>> {
   private tableName: string;
   private campoId: keyof T & string;
@@ -21,6 +23,7 @@ export class DatabaseJson<T extends Record<string, unknown>> {
 
     filas.push(registro);
     this.escribirFilas(filas);
+    this.sincronizarGuardado(registro);
     return { ...registro };
   }
 
@@ -35,6 +38,7 @@ export class DatabaseJson<T extends Record<string, unknown>> {
 
     filas[index] = { ...data };
     this.escribirFilas(filas);
+    this.sincronizarGuardado(filas[index]);
     return { ...filas[index] };
   }
 
@@ -47,6 +51,7 @@ export class DatabaseJson<T extends Record<string, unknown>> {
     }
 
     this.escribirFilas(restantes);
+    this.sincronizarEliminacion(id);
   }
 
   buscar(id: number): T | undefined {
@@ -79,5 +84,17 @@ export class DatabaseJson<T extends Record<string, unknown>> {
 
   private escribirFilas(filas: T[]): void {
     localStorage.setItem(this.tableName, JSON.stringify(filas));
+  }
+
+  private sincronizarGuardado(fila: T): void {
+    void SupabaseRest.guardar(this.tableName, fila).catch((error: unknown) => {
+      console.warn(`No se pudo sincronizar ${this.tableName} con Supabase.`, error);
+    });
+  }
+
+  private sincronizarEliminacion(id: number): void {
+    void SupabaseRest.eliminar(this.tableName, id).catch((error: unknown) => {
+      console.warn(`No se pudo eliminar ${this.tableName} en Supabase.`, error);
+    });
   }
 }
